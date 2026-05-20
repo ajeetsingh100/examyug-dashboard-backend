@@ -71,13 +71,8 @@ exports.addCourse=async (req,res)=>{
         }
 
      /*------STORING THUMBNAIL AND DEMO PDF LINK IN CLOUDINARY---------*/
-        console.log('before uploading file')
-        try{
-            const saved_thumbnail=await uploadToCloudinary(thumbnail,'examyug24/course_img','image',90,250,400)
-        }
-        catch(error){
-            console.log('cloudinary error',error)
-        }
+        console.log('before uploading file')    
+        const saved_thumbnail=await uploadToCloudinary(thumbnail,'examyug24/course_img','image',90,250,400)        
         console.log('data is saved to cloudinary')
 
      /*------ADDING course IN DB---------*/
@@ -105,7 +100,7 @@ exports.addCourse=async (req,res)=>{
         return res.status(500).json({
             success:false,
             error:error.message,
-            message:'Something went wrong'
+            message:error.message
         })
     }
 }   
