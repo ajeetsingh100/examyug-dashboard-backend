@@ -8,6 +8,6 @@ const dbConnect=()=>{
     })
     .then(()=>{
         console.log("db is connected")
-    }).catch(()=>{console.log("unable to connect with")})
+    }).catch(()=>{console.log("unable to connect with database")})
 }
 module.exports=dbConnect
