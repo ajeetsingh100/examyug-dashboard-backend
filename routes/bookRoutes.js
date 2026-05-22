@@ -1,12 +1,12 @@
 const express=require('express')
-const { addBook } = require('../controller/Book')
-const { addCategory, getAllCategory } = require('../controller/BookCategories')
+const { addBook,searchBook } = require('../controller/Book')
+const { addCategory, getAllCategory} = require('../controller/BookCategories')
 const router=express.Router()
 
 
 /*--------------Book Routes--------------*/
 router.post('/add-book',addBook)
-
+router.post('/searched-book',searchBook)
 
 
 

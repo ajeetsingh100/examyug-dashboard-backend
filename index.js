@@ -14,6 +14,7 @@ const userRoutes=require("./routes/userRoutes")
 
 const courseRoutes=require('./routes/courseRoutes')
 const bookRoutes=require('./routes/bookRoutes')
+const booksetRoutes=require('./routes/booksetRoutes')
 //AUTHENTICATION ROUTES
 const {auth, isStudent}=require("./middlewares/auth")
 
@@ -40,6 +41,7 @@ app.use(fileUpload({
 app.use('/api/v1/course',courseRoutes)
 app.use('/api/v1/book',bookRoutes)
 app.use('/api/v1/user',userRoutes)
+app.use('/api/v1/bookset',userRoutes)
 
 //BASE ROUTE
 app.get("/",(req,res)=>{

@@ -22,7 +22,7 @@ const booksetSchema= new mongoose.Schema({
         type:String,
         required:true
     },
-    no_of_books:[
+    bookList:[
         {
             type:mongoose.Schema.Types.ObjectId,
             ref:'Book',
