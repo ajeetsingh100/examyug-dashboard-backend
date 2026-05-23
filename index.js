@@ -25,7 +25,7 @@ app.use(express.json())
 app.use(express.urlencoded())
 app.use(cookieParser())
 app.use(cors({
-    origin:"http://localhost:3000",
+    origin:"https://examyug-dashboard-frontend.vercel.app",
     credentials:true
 }))
 
@@ -41,7 +41,7 @@ app.use(fileUpload({
 app.use('/api/v1/course',courseRoutes)
 app.use('/api/v1/book',bookRoutes)
 app.use('/api/v1/user',userRoutes)
-app.use('/api/v1/bookset',userRoutes)
+app.use('/api/v1/bookset',booksetRoutes)
 
 //BASE ROUTE
 app.get("/",(req,res)=>{

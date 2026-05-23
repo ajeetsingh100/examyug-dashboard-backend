@@ -94,7 +94,7 @@ exports.addBook=async (req,res)=>{
         return res.status(500).json({
             success:false,
             error:error.message,
-            message:'Error while adding new book'
+            message:error.message
         })
     }
 }   
@@ -110,25 +110,41 @@ exports.deleteBook=async(req,res)=>{
 }
 
 exports.searchBook=async(req,res)=>{
-    const {keyword}=req.body
+    const keyword=req.query.keyword
+    const page=parseInt(req.query.page)||1
+    const limit=parseInt(req.query.limit)||3
+    console.log(req.query)
+    const please_skip=(page-1)*limit
+    console.log(please_skip)
+   
     try {
+        const totalDocuments=await Book.countDocuments({bookTitle:{
+            $regex:keyword,
+            $options:'i'
+        }})
+
         const searchedBooks=await Book.find({bookTitle:{
             $regex:keyword,
             $options:'i'
-        }}).populate('categoryName')
-        if(searchedBooks.length!=0){
+        }}).populate('categoryName').skip(please_skip).limit(limit)
+
+
+        if(searchedBooks.length===0){
+                console.log('a')
+                return res.status(200).json({
+                    sucess:false,
+                    message:'searched book is not found',
+                    result:[]
+            })
+        }
+        const totalPages=Math.ceil(totalDocuments/limit)
             return res.status(200).json({
                 success:true,
                 result:searchedBooks,
-                message:'all books found related to keyword'
+                message:'all books found related to keyword',
+                totalPages:totalPages
             })
-        }else{
-            return res.status(200).json({
-                sucess:false,
-                message:'searched book is not found',
-                result:[]
-            })
-        }
+        
     } catch (error) {
         return res.status(500).json({
             success:false,
