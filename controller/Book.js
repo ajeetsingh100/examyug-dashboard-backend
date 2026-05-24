@@ -142,7 +142,8 @@ exports.searchBook=async(req,res)=>{
                 success:true,
                 result:searchedBooks,
                 message:'all books found related to keyword',
-                totalPages:totalPages
+                totalPages:totalPages,
+                totalDocuments:totalDocuments
             })
         
     } catch (error) {
