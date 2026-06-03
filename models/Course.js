@@ -11,9 +11,9 @@ const courseSchema=new mongoose.Schema({
         required:true,
         trim:true
     },
-    categoryName:{
+    category:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:"CourseCategory",
+        ref:"CourseCategories",
         required:true,
     },
     // seoKeyword:[{

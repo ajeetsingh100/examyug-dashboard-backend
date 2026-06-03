@@ -1,4 +1,4 @@
-const BookCategories=require('../models/BookCategories')
+const CourseCategories=require("../models/CourseCategories")
 
 exports.addCategory=async(req,res)=>{
     const {categoryTitle}=req.body
@@ -13,7 +13,7 @@ exports.addCategory=async(req,res)=>{
         }
 
         /*------SAVING CATEGORY IN DB-------*/
-        const savedCategory=await BookCategories.create({
+        const savedCategory=await CourseCategories.create({
             categoryTitle
         })
 
@@ -34,10 +34,9 @@ exports.addCategory=async(req,res)=>{
 }
 
 
-exports.getAllCategories=async(req,res)=>{
+exports.getAllCategory=async(req,res)=>{
    try {
-        const allCategories=await BookCategories.find({}).populate('books')
-        console.log('get-all-category',allCategories )
+        const allCategories=await CourseCategories.find({}).populate('courses')
         return res.status(200).json({
             success:true,
             message:"All category fetch successfully",
@@ -46,6 +45,7 @@ exports.getAllCategories=async(req,res)=>{
    } catch (error) {
         return res.status(500).json({
             success:false,
+            message:'Something went wrong',
             error:error.message,
             
         })
@@ -58,15 +58,19 @@ exports.paginatedCategories=async(req,res)=>{
     const please_skip=(page-1)*limit
 
    try {
-         let allCategories=await BookCategories.find({}).populate('books').skip(please_skip).limit(limit).lean()
-         const totalDocuments=await BookCategories.countDocuments({})
+         let allCategories=await CourseCategories.find({}).populate('courses').skip(please_skip).limit(limit).lean()
+         const totalDocuments=await CourseCategories.countDocuments({})
          allCategories=allCategories.map((category,index)=>{ return {serial_no:(page-1)*limit+index+1,...category}})
+         console.log(allCategories)
+    
          const totalPages=Math.ceil(totalDocuments/limit)
+    
          return res.status(200).json({
             success:true,
             allCategories,
             totalPages,
             message:'all paginated categories fetched successfully'
+        
         })
     } catch (error) {
         return res.status(500).json({

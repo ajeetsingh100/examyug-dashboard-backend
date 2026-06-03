@@ -1,14 +1,20 @@
 const express=require("express");
-const { getAllCategory, addCategory } = require("../controller/CourseCategory");
-const { addCourse } = require("../controller/Course");
+const { getAllCategory, addCategory,paginatedCategories } = require("../controller/CourseCategories");
+const { addCourse,getAllCourses, searchCourse,searchByCategory, editcourseDetails,getCourse } = require("../controller/Course");
 const router=express.Router();
 
 /*-----------Course Category Routes---------------*/
 router.post('/add-course',addCourse)
+router.post('/get-course',getCourse)
+router.get('/view-all-courses',getAllCourses)
+router.get('/searched-course',searchCourse)
+router.get('/category-searched',searchByCategory)
+router.post('/edit-course',editcourseDetails)
 
 
 /*-----------Course Category Routes---------------*/
-router.post('/course-category/add-category',addCategory)
-router.get('/course-category/get-all-category',getAllCategory)
+router.post('/categories/add-category',addCategory)
+router.get('/categories/get-all-categories',getAllCategory)
+router.get('/categories/view-all-categories',paginatedCategories)
 
 module.exports=router

@@ -1,7 +1,7 @@
 const mongoose=require('mongoose')
 
-const courseCategorySchema=new mongoose.Schema({
-    categoryName:{
+const courseCategoriesSchema=new mongoose.Schema({
+    categoryTitle:{
         type:String,
         trim:true,
         require:true,
@@ -12,4 +12,4 @@ const courseCategorySchema=new mongoose.Schema({
     }]
 })
 
-module.exports=mongoose.model("CoursesCategory",courseCategorySchema)
+module.exports=mongoose.model("CourseCategories",courseCategoriesSchema)

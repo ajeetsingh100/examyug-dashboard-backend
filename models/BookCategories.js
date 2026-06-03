@@ -1,11 +1,10 @@
 const mongoose=require('mongoose')
 
-const bookCategorySchema=new mongoose.Schema({
-    categoryName:{
+const bookCategoriesSchema=new mongoose.Schema({
+    categoryTitle:{
         type:String,
         required:true
     },
-
     books:[
         {
             type:mongoose.Schema.Types.ObjectId,
@@ -16,4 +15,4 @@ const bookCategorySchema=new mongoose.Schema({
 
 })
 
-module.exports=mongoose.model('BookCategory',bookCategorySchema)
+module.exports=mongoose.model('BookCategories',bookCategoriesSchema)

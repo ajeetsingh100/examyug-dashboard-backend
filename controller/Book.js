@@ -1,17 +1,18 @@
 const Book=require('../models/Book')
+const BookCategories = require('../models/BookCategories')
 const {uploadToCloudinary}=require('../utilities/fileUploaderCloudinary')
 
 /*--------FUNCTION TO HANDLE ADD BOOK----------*/
 exports.addBook=async (req,res)=>{
-    const {bookTitle, bookDescription, maxPrice, sellingPrice,categoryName}= req.body
-    const sp=Number(sellingPrice)
-    const mrp=Number(maxPrice)
+    const {bookTitle, bookDescription,categoryID}= req.body
+    const sp=Number(req.body.sellingPrice)
+    const mrp=Number(req.body.maxPrice)
     console.log(req.body)
     const {demoPdf,thumbnail}=req.files
     try {         
     /*------VALIDATING INPUTS---------*/
         /*------QUERY RELATED FOR MAXPRICE AND SELLING PRICE RELATED O(ZERO)*/
-        if(!bookTitle.trim()||!bookDescription.trim()||!categoryName)
+        if(!bookTitle.trim()||!bookDescription.trim()||!categoryID)
         {   
             return res.status(400).json({
                 success:false,
@@ -19,14 +20,7 @@ exports.addBook=async (req,res)=>{
             })
         }
 
-        /*------HANDLING SELLING PRICE OR MAX PRICE IF EMPTY------*/
-        if(!sellingPrice.trim()||!maxPrice.trim()){
-            return res.status(400).json({
-                success:false,
-                message:'Please fill all the required fields'
-            })
-        }
-
+    
         /*------HANDLING SELLING PRICE OR MAX PRICE IS ZERO------*/
         if(sp===0||mrp===0){
              return res.status(400).json({
@@ -76,12 +70,13 @@ exports.addBook=async (req,res)=>{
         const savedBook= await Book.create({
             bookTitle,
             bookDescription,        
-            maxPrice,
-            categoryName,
-            sellingPrice,
+            maxPrice:mrp,
+            category:categoryID,
+            sellingPrice:sp,
             demoPdf:saved_demo_pdf.secure_url,
             thumbnail:saved_thumbnail.secure_url
         })
+        await BookCategories.findByIdAndUpdate({_id:categoryID},{$push:{books:savedBook._id}})
 
     /*------RETURNING SUCCESS RESPONSE TO CLIENT---------*/
         return res.status(200).json({
@@ -111,8 +106,8 @@ exports.deleteBook=async(req,res)=>{
 
 exports.searchBook=async(req,res)=>{
     const keyword=req.query.keyword
-    const page=parseInt(req.query.page)||1
-    const limit=parseInt(req.query.limit)||3
+    const page=parseInt(req.query.page)
+    const limit=parseInt(req.query.limit)
     console.log(req.query)
     const please_skip=(page-1)*limit
     console.log(please_skip)
@@ -123,24 +118,32 @@ exports.searchBook=async(req,res)=>{
             $options:'i'
         }})
 
-        const searchedBooks=await Book.find({bookTitle:{
+        let books=await Book.find({bookTitle:{
             $regex:keyword,
             $options:'i'
-        }}).populate('categoryName').skip(please_skip).limit(limit)
+        }}).populate('category').skip(please_skip).limit(limit).lean()
 
-
-        if(searchedBooks.length===0){
+        
+        console.log(books)
+        if(books.length===0){
                 console.log('a')
                 return res.status(200).json({
                     sucess:false,
                     message:'searched book is not found',
-                    result:[]
+                    books:[]
             })
         }
+        books=books.map((book,index)=>{
+            return {
+                serial_no:(page-1)*limit+index+1,
+                ...book
+            }
+        })
+        console.log('hello',books)
         const totalPages=Math.ceil(totalDocuments/limit)
             return res.status(200).json({
                 success:true,
-                result:searchedBooks,
+                books,
                 message:'all books found related to keyword',
                 totalPages:totalPages,
                 totalDocuments:totalDocuments
@@ -156,3 +159,88 @@ exports.searchBook=async(req,res)=>{
  
     
 }
+
+exports.searchByCategory=async(req,res)=>{
+    console.log(req.query)
+    const keyword=req.query.keyword
+    const page=parseInt(req.query.page)
+    const limit=parseInt(req.query.limit)
+    const please_skip=(page-1)*limit
+
+    try {
+        const category=await BookCategories.findById({_id:keyword})
+        const totalDocuments=category.books.length
+
+        const selectedCategoryBook=await BookCategories.find({_id:keyword}).populate({
+            path:'books',
+            populate:{path:'category'},
+            options:{
+                sort:{bookTitle:1},
+                skip:please_skip,
+                limit:limit
+            }
+
+        }).lean()
+        const books=selectedCategoryCourse[0].books.map((book,index)=>{return {serial_no:(page-1)*limit+index+1,...book}})
+
+
+        if(selectedCategoryBook[0].courses.length===0){
+            res.status(200).json({
+                success:false,
+                message:'No courses found',
+                books:[]
+            })
+        }
+
+        const totalPages=Math.ceil(totalDocuments/limit)
+        return res.status(200).json({
+            success:true,
+            message:'courses fetched successfully',
+            totalDocuments,
+            totalPages,
+            books
+        })
+
+    } catch (error) {
+         return res.status(200).json({
+            success:false,
+            message:'Internal Server Error',
+            error:error.message
+        })
+    }
+}
+
+
+exports.getAllBooks=async(req,res)=>{
+ try {
+        const page=parseInt(req.query.page)
+        const limit=parseInt(req.query.limit)
+        const please_skip=(page-1)*limit
+
+        const totalDocument=await Book.countDocuments({})
+        let allBooks=await Book.find({}).populate('category').collation({ locale: 'en' }).sort({bookTitle:1}).skip(please_skip).limit(limit).lean()
+        if(allBooks.length===0){
+            return res.status(200).json({
+                success:false,
+                message:'No course is added yet',
+                allBooks
+            })
+        }
+        allBooks=allBooks.map((book,index)=>{return {serial_no:(page-1)*limit + index+1,...book}})
+        const totalPages=Math.ceil(totalDocument/limit)
+        return res.status(200).json({
+            success:true,
+            message:'all courses fetched successfully',
+            allBooks,
+            totalPages
+        })       
+        
+    } catch (error) {
+        return res.status(500).json({
+            success:false,
+            message:'Error while fetching all courses',
+            error:error.message
+        })
+    }
+}
+  

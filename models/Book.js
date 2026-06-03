@@ -11,9 +11,9 @@ const bookSchema=new mongoose.Schema({
         required:true,
         trim:true
     },
-    categoryName:{
+    category:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:"BookCategory",
+        ref:"BookCategories",
         required:true,
     },
     // seoKeyword:[{

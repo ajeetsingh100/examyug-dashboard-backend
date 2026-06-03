@@ -2,12 +2,17 @@ const mongoose=require('mongoose')
 
 const booksetSchema= new mongoose.Schema({
 
-    booksetName:{
+    booksetTitle:{
         type:String,
         required:true
     },
     booksetDescription:{
-        type:Sting,
+        type:String,
+        required:true
+    },
+    category:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'BookCategories',
         required:true
     },
     maxPrice:{
