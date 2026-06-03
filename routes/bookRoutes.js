@@ -7,7 +7,7 @@ const router=express.Router()
 /*--------------Book Routes--------------*/
 router.post('/add-book',addBook)
 router.get('/searched-book',searchBook)
-router.get('/searched-category',searchByCategory)
+router.get('/category-searched',searchByCategory)
 router.get('/view-all-books',getAllBooks)
 
 

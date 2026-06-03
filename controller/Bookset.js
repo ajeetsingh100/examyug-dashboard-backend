@@ -103,7 +103,7 @@ exports.getAllBooksets=async(req,res)=>{
             const please_skip=(page-1)*limit
     
             const totalDocument=await Bookset.countDocuments({})
-            let allBooksets=await Bookset.find({}).populate('category').collation({ locale: 'en' }).sort({booksetTitle:1}).skip(please_skip).limit(limit).lean()
+            let allBooksets=await Bookset.find({}).populate('category').populate('bookList').collation({ locale: 'en' }).sort({booksetTitle:1}).skip(please_skip).limit(limit).lean()
             if(allBooksets.length===0){
                 return res.status(200).json({
                     success:false,
@@ -144,7 +144,7 @@ exports.searchBookset=async(req,res)=>{
             let booksets=await Bookset.find({booksetTitle:{
                 $regex:keyword,
                 $options:'i'
-            }}).populate('category').skip(please_skip).limit(limit).lean()
+            }}).populate('category').populate('bookList').skip(please_skip).limit(limit).lean()
     
             
             if(booksets.length===0){

@@ -181,10 +181,11 @@ exports.searchByCategory=async(req,res)=>{
             }
 
         }).lean()
-        const books=selectedCategoryCourse[0].books.map((book,index)=>{return {serial_no:(page-1)*limit+index+1,...book}})
+        
+        const books=selectedCategoryBook[0].books.map((book,index)=>{return {serial_no:(page-1)*limit+index+1,...book}})
+        console.log(books)
 
-
-        if(selectedCategoryBook[0].courses.length===0){
+        if(selectedCategoryBook.length===0){
             res.status(200).json({
                 success:false,
                 message:'No courses found',
