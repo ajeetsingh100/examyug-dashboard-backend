@@ -25,7 +25,7 @@ app.use(express.json())
 app.use(express.urlencoded())
 app.use(cookieParser())
 app.use(cors({
-    origin:["http://localhost:3000",'http://localhost:3001','https://examyug-online.vercel.app'],
+    origin:["http://localhost:3000",'http://localhost:3001','https://examyug-online.vercel.app','https://examyug-dashboard-frontend.vercel.app'],
     // origin:'https://examyug-dashboard-frontend.vercel.app',
     credentials:true
 }))

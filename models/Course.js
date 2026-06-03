@@ -16,15 +16,7 @@ const courseSchema=new mongoose.Schema({
         ref:"CourseCategories",
         required:true,
     },
-    // seoKeyword:[{
-    //     type:String,
-    //     required:true,
-    //     trim:true
-    // }],
-    // tags:[{
-    //     type:String,    
-    //     trim:true
-    // }],
+    
     sellingPrice:{
         type:Number,
         required:true,

@@ -16,15 +16,7 @@ const bookSchema=new mongoose.Schema({
         ref:"BookCategories",
         required:true,
     },
-    // seoKeyword:[{
-    //     type:String,
-    //     required:true,
-    //     trim:true
-    // }],
-    // tags:[{
-    //     type:String,    
-    //     trim:true
-    // }],
+ 
     maxPrice:{
         type:Number,
         required:true,

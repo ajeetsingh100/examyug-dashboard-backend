@@ -46,6 +46,12 @@ const userSchema=new mongoose.Schema({
             type:mongoose.Schema.Types.ObjectId,
             ref:"Books"
         }
+    ],
+     booksets:[
+        {
+            type:mongoose.Schema.Types.ObjectId,
+            ref:"Bookset"
+        }
     ]
 },
 {
