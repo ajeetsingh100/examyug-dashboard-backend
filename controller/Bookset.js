@@ -103,7 +103,12 @@ exports.getAllBooksets=async(req,res)=>{
             const please_skip=(page-1)*limit
     
             const totalDocument=await Bookset.countDocuments({})
-            let allBooksets=await Bookset.find({}).populate('category').populate('bookList').collation({ locale: 'en' }).sort({booksetTitle:1}).skip(please_skip).limit(limit).lean()
+            let allBooksets=await Bookset.find({}).populate('category').populate({
+                path:'bookList',
+                populate:{
+                    path:'category'
+                }
+            }).collation({ locale: 'en' }).sort({booksetTitle:1}).skip(please_skip).limit(limit).lean()
             if(allBooksets.length===0){
                 return res.status(200).json({
                     success:false,
@@ -235,4 +240,51 @@ exports.getAllCategories=async(req,res)=>{
             
         })
    }
+}
+
+
+exports.editBooksetDetails=async(req,res)=>{
+     try {
+      const booksetID= req.body.booksetID
+      const updates=JSON.parse(req.body.updates)
+      const bookset = await Bookset.findById(booksetID)
+    
+      
+      if (!bookset) {
+        return res.status(404).json({ error: "bookset not found" })
+      }
+  
+      // If Thumbnail Image is found, update it
+      if (req.files) {
+        console.log("thumbnail update")
+        const thumbnail = req.files.thumbnail    //     
+        const image = await uploadToCloudinary(thumbnail,'examyug24/bookset_img','image',90,250,400)    //     
+        bookset.thumbnail = image.secure_url    //    
+      }
+  
+      // Update only the fields that are present in the request body
+     if (Object.keys(updates).length!==0) {
+       for (const key in updates) {
+         if (updates.hasOwnProperty(key)) {
+           bookset[key] = updates[key]
+         }
+       }
+     }  
+      await bookset.save()
+  
+  
+      res.json({
+        success: true,
+        message: "Book updated successfully",
+        //updatedCourse,
+      })
+    } catch (error) {
+      console.error(error)
+      res.status(500).json({
+        success: false,
+        message: "Internal server error",
+        error: error.message,
+      })
+    }
+  
 }

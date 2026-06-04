@@ -136,28 +136,9 @@ exports.editcourseDetails=async(req,res)=>{
            course[key] = updates[key]
          }
        }
-     }
-  
+     }  
       await course.save()
   
-    //   const updatedCourse = await Course.findOne({
-    //     _id: courseId,
-    //   })
-    //     .populate({
-    //       path: "instructor",
-    //       populate: {
-    //         path: "additionalDetails", 
-    //       },
-    //     })
-    //     .populate("category")
-    //     .populate("ratingAndReviews")
-    //     .populate({
-    //       path: "courseSection",
-    //       populate: {
-    //         path: "subSection",
-    //       },
-    //     })
-    //     .exec()
   
       res.json({
         success: true,

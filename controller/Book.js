@@ -8,7 +8,7 @@ exports.addBook=async (req,res)=>{
     const sp=Number(req.body.sellingPrice)
     const mrp=Number(req.body.maxPrice)
     console.log(req.body)
-    const {demoPdf,thumbnail}=req.files
+    
     try {         
     /*------VALIDATING INPUTS---------*/
         /*------QUERY RELATED FOR MAXPRICE AND SELLING PRICE RELATED O(ZERO)*/
@@ -95,9 +95,7 @@ exports.addBook=async (req,res)=>{
 }   
 
 /*--------FUNCTION TO HANDLE EDIT BOOK DETAILS----------*/
-exports.editBookDetails=async(req,res)=>{
 
-}
 
 /*--------FUNCTION TO HANDLE DELETE BOOK----------*/
 exports.deleteBook=async(req,res)=>{
@@ -245,3 +243,50 @@ exports.getAllBooks=async(req,res)=>{
     }
 }
   
+exports.editBookDetails=async(req,res)=>{
+    try {
+      const bookID= req.body.bookID
+      const updates=JSON.parse(req.body.updates)
+      const book = await Book.findById(bookID)
+      
+      if (!book) {
+        return res.status(404).json({ error: "book not found" })
+      }
+  
+      // If Thumbnail Image is found, update it
+      if (req.files) {
+        console.log("thumbnail update")
+        const thumbnail = req.files.thumbnail
+        const demoPdf=req.files.demoPdf
+        const image = await uploadToCloudinary(thumbnail,'examyug24/course_img','image',90,250,400)
+        const pdf= await uploadToCloudinary(demoPdf,'examyug24/pdf_demo_link','pdf')
+        book.thumbnail = image.secure_url
+        book.demoPdf=pdf.secure_url
+      }
+  
+      // Update only the fields that are present in the request body
+     if (Object.keys(updates).length!==0) {
+       for (const key in updates) {
+         if (updates.hasOwnProperty(key)) {
+           book[key] = updates[key]
+         }
+       }
+     }  
+      await book.save()
+  
+  
+      res.json({
+        success: true,
+        message: "Book updated successfully",
+        //updatedCourse,
+      })
+    } catch (error) {
+      console.error(error)
+      res.status(500).json({
+        success: false,
+        message: "Internal server error",
+        error: error.message,
+      })
+    }
+  
+}

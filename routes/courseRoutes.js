@@ -1,5 +1,5 @@
 const express=require("express");
-const { getAllCategory, addCategory,paginatedCategories } = require("../controller/CourseCategories");
+const { getAllCategory, addCategory,paginatedCategories, editCategoryDetails } = require("../controller/CourseCategories");
 const { addCourse,getAllCourses, searchCourse,searchByCategory, editcourseDetails,getCourse } = require("../controller/Course");
 const router=express.Router();
 
@@ -16,5 +16,5 @@ router.post('/edit-course',editcourseDetails)
 router.post('/categories/add-category',addCategory)
 router.get('/categories/get-all-categories',getAllCategory)
 router.get('/categories/view-all-categories',paginatedCategories)
-
+router.post('/edit-category',editCategoryDetails)
 module.exports=router

@@ -53,9 +53,10 @@ exports.getAllCategory=async(req,res)=>{
 }
 
 exports.paginatedCategories=async(req,res)=>{
-    const page=parseInt(req.query.page)||1
-    const limit=parseInt(req.query.limti)||5
+    const page=parseInt(req.query.page)
+    const limit=parseInt(req.query.limit)
     const please_skip=(page-1)*limit
+    console.log('hello',req.query)
 
    try {
          let allCategories=await CourseCategories.find({}).populate('courses').skip(please_skip).limit(limit).lean()
@@ -81,5 +82,42 @@ exports.paginatedCategories=async(req,res)=>{
         
     }
 
+}
 
+exports.editCategoryDetails=async(req,res)=>{
+    try {
+      const categoryID= req.body.categoryID
+      const updates=JSON.parse(req.body.updates)
+     
+      const category = await CourseCategories.findById(categoryID)
+      
+      if (!category) {
+        return res.status(404).json({ error: "Category not found" })
+      }
+  
+      // Update only the fields that are present in the request body
+     if (Object.keys(updates).length!==0) {
+       for (const key in updates) {
+         if (updates.hasOwnProperty(key)) {
+           category[key] = updates[key]
+         }
+       }
+     }  
+      await category.save()
+  
+  
+      res.json({
+        success: true,
+        message: "Category updated successfully",
+      
+      })
+    } catch (error) {
+      console.error(error)
+      res.status(500).json({
+        success: false,
+        message: "Internal server error",
+        error: error.message,
+      })
+    }
+  
 }
