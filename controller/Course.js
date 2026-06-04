@@ -4,14 +4,14 @@ const {uploadToCloudinary}=require('../utilities/fileUploaderCloudinary')
 
 /*--------FUNCTION TO HANDLE ADD course----------*/
 exports.addCourse=async (req,res)=>{
-    const {courseTitle, courseDescription,categoryID,timeDuration, maxPrice, sellingPrice,courseDisplay,
+     try { const {courseTitle, courseDescription,categoryID,timeDuration, maxPrice, sellingPrice,courseDisplay,
         featured,newBatch
     }= req.body
     const sp=Number(sellingPrice)
     const mrp=Number(maxPrice)
     console.log('add course',req.body)
     const {thumbnail}=req.files
-    try {         
+           
     /*------VALIDATING INPUTS---------*/
         /*------QUERY RELATED FOR MAXPRICE AND SELLING PRICE RELATED O(ZERO)*/
         if(!courseTitle.trim()||!courseDescription.trim()||!categoryID.trim()

@@ -8,7 +8,7 @@ exports.addBook=async (req,res)=>{
     const sp=Number(req.body.sellingPrice)
     const mrp=Number(req.body.maxPrice)
     console.log(req.body)
-    
+    const {demoPdf,thumbnail}=req.files
     try {         
     /*------VALIDATING INPUTS---------*/
         /*------QUERY RELATED FOR MAXPRICE AND SELLING PRICE RELATED O(ZERO)*/

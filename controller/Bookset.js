@@ -4,7 +4,7 @@ const Bookset=require('../models/Bookset')
 const { uploadToCloudinary } = require("../utilities/fileUploaderCloudinary")
 
 exports.createBookset=async(req,res)=>{
-    const {booksetTitle, booksetDescription, categoryID}=req.body
+    try{const {booksetTitle, booksetDescription, categoryID}=req.body
     const sp=Number(req.body.sellingPrice)
     const mrp=Number(req.body.maxPrice)
     const {thumbnail}=req.files
@@ -94,7 +94,13 @@ exports.createBookset=async(req,res)=>{
         success:true,
         message:'bookset created successfully'
     
-    })
+    })}catch(error){
+        return res.status(500).json({
+            success:false,
+            error:error.message,
+            message:error.message,
+        })
+    }
 }
 exports.getAllBooksets=async(req,res)=>{
      try {
@@ -128,7 +134,7 @@ exports.getAllBooksets=async(req,res)=>{
         } catch (error) {
             return res.status(500).json({
                 success:false,
-                message:'Error while fetching all courses',
+                message:error.message,
                 error:error.message
             })
         }
