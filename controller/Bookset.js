@@ -259,7 +259,10 @@ exports.editBooksetDetails=async(req,res)=>{
       if (!bookset) {
         return res.status(404).json({ error: "bookset not found" })
       }
-  
+      if(updates.category){
+        await Bookset
+
+      }
       // If Thumbnail Image is found, update it
       if (req.files) {
         console.log("thumbnail update")

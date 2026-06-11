@@ -248,11 +248,17 @@ exports.editBookDetails=async(req,res)=>{
       const bookID= req.body.bookID
       const updates=JSON.parse(req.body.updates)
       const book = await Book.findById(bookID)
+      console.log(req.body)
       
       if (!book) {
         return res.status(404).json({ error: "book not found" })
       }
-  
+      
+      if(updates.category){
+        console.log('change category execution')
+        await BookCategories.findByIdAndUpdate(book.category,{$pull:{books:book._id}})
+         await BookCategories.findByIdAndUpdate(updates.category,{$push:{books:book._id}})
+      }
       // If Thumbnail Image is found, update it
       if (req.files) {
         console.log("thumbnail update")
