@@ -114,14 +114,29 @@ exports.editcourseDetails=async(req,res)=>{
     try {
       const courseID= req.body.courseID
       const updates=JSON.parse(req.body.updates)
-     
-      const course = await Course.findById(courseID)
-      
-      if (!course) {
-        return res.status(404).json({ error: "Course not found" })
+      console.log(updates)
+
+      if (!courseID) {
+        return res.status(400).json({ success:false,message: "course id missing" })
       }
+      const course = await Course.findById(courseID)
+      //CHECKING IF COURSE EXIST
+      if(!course){
+        return res.status(404).json({
+            success:false,
+            message:'course not found'
+        })
+      }
+      // IF THE UPDATES CONTAINS THE CATEGORY UPDATE IT     
+      if(updates.category){
+        //REMOVING EXISTING CATEGORY
+         await CourseCategories.findByIdAndUpdate(course.category,{$pull:{courses:course._id}})
+        //ASSIGNING NEW CATEGORY
+         await CourseCategories.findByIdAndUpdate(updates.category,{$push:{courses:course._id}})
+
+      }   
   
-      // If Thumbnail Image is found, update it
+      // IF THE UPDATES CONTAINS THUMBNAIL CHANGE IT
       if (req.files) {
         console.log("thumbnail update")
         const thumbnail = req.files.thumbnail
@@ -129,7 +144,7 @@ exports.editcourseDetails=async(req,res)=>{
         course.thumbnail = image.secure_url
       }
   
-      // Update only the fields that are present in the request body
+      // UPDATE ONLY THOSE FIELDS CONTAINED BY UPDATES OBJECT
      if (Object.keys(updates).length!==0) {
        for (const key in updates) {
          if (updates.hasOwnProperty(key)) {
@@ -137,17 +152,17 @@ exports.editcourseDetails=async(req,res)=>{
          }
        }
      }  
-      await course.save()
+     //SAVING THE COURSE
+      await course.save() 
   
-  
-      res.json({
+       return res.json({
         success: true,
         message: "Course updated successfully",
         //updatedCourse,
       })
     } catch (error) {
-      console.error(error)
-      res.status(500).json({
+    
+      return res.status(500).json({
         success: false,
         message: "Internal server error",
         error: error.message,
@@ -213,7 +228,7 @@ exports.searchCourse=async(req,res)=>{
 
         
         if(courses.length===0){
-            res.status(200).json({
+            return res.status(200).json({
                 success:false,
                 message:'No courses found',
                 courses:[]
@@ -265,7 +280,7 @@ exports.searchByCategory=async(req,res)=>{
 
 
         if(selectedCategoryCourse[0].courses.length===0){
-            res.status(200).json({
+            return res.status(200).json({
                 success:false,
                 message:'No courses found',
                 courses:[]

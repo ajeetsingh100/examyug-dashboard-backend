@@ -37,6 +37,7 @@ exports.addCategory=async(req,res)=>{
 exports.getAllCategory=async(req,res)=>{
    try {
         const allCategories=await CourseCategories.find({}).populate('courses')
+        
         return res.status(200).json({
             success:true,
             message:"All category fetch successfully",

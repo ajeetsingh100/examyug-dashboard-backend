@@ -21,9 +21,22 @@ const userSchema=new mongoose.Schema({
         required:true,
         
     },
-    confirmPassword:{
-        type:String, 
-      
+    phone_no:{
+        type:String,
+        required:true
+    },
+    image:{
+        type:String
+    },
+    gender:
+    {
+        type:String,
+        required:true
+    },
+    role:{
+        type:String,
+        enum:['admin','book-manager','course-manager'],
+        required:true
     },
     resetToken:{
         type:String
@@ -31,28 +44,6 @@ const userSchema=new mongoose.Schema({
     resetTokenExpiryTime:{
         type:Date,
     },
-    address:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"Address"
-    },
-    courses:[
-        {
-            type:mongoose.Schema.Types.ObjectId,
-            ref:"Course"
-        }
-    ],
-    books:[
-        {
-            type:mongoose.Schema.Types.ObjectId,
-            ref:"Books"
-        }
-    ],
-     booksets:[
-        {
-            type:mongoose.Schema.Types.ObjectId,
-            ref:"Bookset"
-        }
-    ]
 },
 {
     timestamps:true
